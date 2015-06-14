@@ -1,4 +1,4 @@
-package app.nanodegree.masini.simone.spotify_streamer;
+package app.nanodegree.masini.simone.spotify_streamer.adapter;
 
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import app.nanodegree.masini.simone.spotify_streamer.R;
 import kaaes.spotify.webapi.android.models.Artist;
 
 /**

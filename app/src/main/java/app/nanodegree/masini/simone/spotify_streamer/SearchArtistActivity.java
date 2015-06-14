@@ -10,10 +10,9 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
-
+import app.nanodegree.masini.simone.spotify_streamer.adapter.ArtistAdapter;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
