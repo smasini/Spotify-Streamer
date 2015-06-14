@@ -1,5 +1,6 @@
 package app.nanodegree.masini.simone.spotify_streamer;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -7,6 +8,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -21,8 +24,6 @@ import kaaes.spotify.webapi.android.models.ArtistsPager;
 
 public class SearchArtistActivity extends ActionBarActivity {
 
-    //private EditText searchArtist;
-    //private ListView resultArtist;
     private ArtistAdapter adapterResult;
 
     @Override
@@ -45,6 +46,15 @@ public class SearchArtistActivity extends ActionBarActivity {
         });
         adapterResult = new ArtistAdapter(this);
         resultArtist.setAdapter(adapterResult);
+        resultArtist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Artist artist = adapterResult.getItem(position);
+                Intent intent = new Intent(SearchArtistActivity.this,TopTenActivity.class);
+                intent.putExtra("artist", artist.id);
+                startActivity(intent);
+            }
+        });
     }
 
     public void searchArtist(String artistName){
