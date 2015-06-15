@@ -72,6 +72,4 @@ public class SongAdapter extends ArrayAdapter<Track> {
             this.holderImage = image;
         }
     }
-
-
 }

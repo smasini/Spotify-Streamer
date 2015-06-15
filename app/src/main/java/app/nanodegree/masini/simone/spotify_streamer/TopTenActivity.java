@@ -1,11 +1,12 @@
 package app.nanodegree.masini.simone.spotify_streamer;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -31,11 +32,10 @@ public class TopTenActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_ten);
         Intent i = getIntent();
-        idArtist = i.getStringExtra("artist");
+        idArtist = i.getStringExtra(getString(R.string.extra_artist_key));
         adapter = new SongAdapter(this);
         ListView listView = (ListView) findViewById(R.id.listview_top_10);
         listView.setAdapter(adapter);
-
     }
 
     @Override
@@ -47,32 +47,19 @@ public class TopTenActivity extends ActionBarActivity {
         searchSongTask.execute(idArtist);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ten, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     public class SearchSongTask extends AsyncTask<String,Void,List<Track>> {
+        final String TAG = SearchSongTask.class.getSimpleName();
         @Override
         protected List<Track> doInBackground(String... params) {
             List<Track> tracks = new ArrayList<Track>();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(TopTenActivity.this);
+            final String countryCode = preferences.getString(getString(R.string.pref_country_code_key),getString(R.string.pref_country_code_default));
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setEndpoint(SpotifyApi.SPOTIFY_WEB_API_ENDPOINT)
                     .setRequestInterceptor(new RequestInterceptor() {
                         @Override
                         public void intercept(RequestInterceptor.RequestFacade request) {
-                            request.addQueryParam("country", "IT");
+                            request.addQueryParam("country", countryCode);
                         }
                     })
                     .build();
@@ -82,7 +69,7 @@ public class TopTenActivity extends ActionBarActivity {
                 if(tracks1.tracks.size()>0)
                     tracks = service.getArtistTopTrack(params[0]).tracks;
             }catch(RetrofitError e){
-
+                Log.e(TAG, e.toString());
             }
             return tracks;
         }

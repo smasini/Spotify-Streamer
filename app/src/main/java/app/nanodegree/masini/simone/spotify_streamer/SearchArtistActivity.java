@@ -52,7 +52,7 @@ public class SearchArtistActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Artist artist = adapterResult.getItem(position);
                 Intent intent = new Intent(SearchArtistActivity.this,TopTenActivity.class);
-                intent.putExtra("artist", artist.id);
+                intent.putExtra(getString(R.string.extra_artist_key), artist.id);
                 startActivity(intent);
             }
         });
@@ -78,9 +78,9 @@ public class SearchArtistActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

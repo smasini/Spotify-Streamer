@@ -21,6 +21,14 @@
         <activity
             android:name=".TopTenActivity"
             android:label="@string/title_activity_top_ten"
+            android:parentActivityName=".SearchArtistActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="app.nanodegree.masini.simone.spotify_streamer.SearchArtistActivity" />
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
             android:parentActivityName=".SearchArtistActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
