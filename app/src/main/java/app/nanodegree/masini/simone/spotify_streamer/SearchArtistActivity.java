@@ -52,7 +52,8 @@ public class SearchArtistActivity extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Artist artist = adapterResult.getItem(position);
                 Intent intent = new Intent(SearchArtistActivity.this,TopTenActivity.class);
-                intent.putExtra(getString(R.string.extra_artist_key), artist.id);
+                intent.putExtra(getString(R.string.extra_artist_id_key), artist.id);
+                intent.putExtra(getString(R.string.extra_artist_name_key), artist.name);
                 startActivity(intent);
             }
         });

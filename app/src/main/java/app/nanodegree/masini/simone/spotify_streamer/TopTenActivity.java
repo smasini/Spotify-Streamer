@@ -24,7 +24,7 @@ import retrofit.RetrofitError;
 
 public class TopTenActivity extends ActionBarActivity {
 
-    private String idArtist;
+    private String idArtist, nameArtist;
     private SongAdapter adapter;
     private SearchSongTask searchSongTask;
     @Override
@@ -32,7 +32,8 @@ public class TopTenActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_ten);
         Intent i = getIntent();
-        idArtist = i.getStringExtra(getString(R.string.extra_artist_key));
+        idArtist = i.getStringExtra(getString(R.string.extra_artist_id_key));
+        nameArtist = i.getStringExtra(getString(R.string.extra_artist_name_key));
         adapter = new SongAdapter(this);
         ListView listView = (ListView) findViewById(R.id.listview_top_10);
         listView.setAdapter(adapter);
@@ -45,6 +46,9 @@ public class TopTenActivity extends ActionBarActivity {
             searchSongTask.cancel(true);
         searchSongTask = new SearchSongTask();
         searchSongTask.execute(idArtist);
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
+        if(ab!=null)
+            ab.setSubtitle(nameArtist);
     }
 
     public class SearchSongTask extends AsyncTask<String,Void,List<Track>> {
