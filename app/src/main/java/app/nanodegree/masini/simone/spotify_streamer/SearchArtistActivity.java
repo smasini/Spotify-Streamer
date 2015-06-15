@@ -20,12 +20,13 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
+import retrofit.RetrofitError;
 
 
 public class SearchArtistActivity extends ActionBarActivity {
 
     private ArtistAdapter adapterResult;
-
+    private SearchTask searchTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +56,15 @@ public class SearchArtistActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
     }
 
     public void searchArtist(String artistName){
-        new SearchTask().execute(artistName);
+        if(searchTask!=null && !searchTask.isCancelled()){
+            searchTask.cancel(true);
+        }
+        searchTask = new SearchTask();
+        searchTask.execute(artistName);
     }
 
     @Override
@@ -86,12 +92,13 @@ public class SearchArtistActivity extends ActionBarActivity {
             List<Artist> artists = new ArrayList<>();
             SpotifyApi api = new SpotifyApi();
             SpotifyService service = api.getService();
-            if(params[0].equals("")){
+            try {
+                ArtistsPager artistsPager = service.searchArtists(params[0].toLowerCase());
+                if (artistsPager != null) {
+                    artists = artistsPager.artists.items;
+                }
+            }catch(RetrofitError e){
                 return artists;
-            }
-            ArtistsPager artistsPager = service.searchArtists(params[0]);
-            if(artistsPager!=null) {
-                artists = artistsPager.artists.items;
             }
             return artists;
         }

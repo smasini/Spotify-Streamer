@@ -16,12 +16,16 @@ import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
+import retrofit.RequestInterceptor;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
 
 
 public class TopTenActivity extends ActionBarActivity {
 
     private String idArtist;
     private SongAdapter adapter;
+    private SearchSongTask searchSongTask;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +35,16 @@ public class TopTenActivity extends ActionBarActivity {
         adapter = new SongAdapter(this);
         ListView listView = (ListView) findViewById(R.id.listview_top_10);
         listView.setAdapter(adapter);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        new SearchSongTask().execute(idArtist);
+        if(searchSongTask!=null && !searchSongTask.isCancelled())
+            searchSongTask.cancel(true);
+        searchSongTask = new SearchSongTask();
+        searchSongTask.execute(idArtist);
     }
 
     @Override
@@ -59,11 +67,23 @@ public class TopTenActivity extends ActionBarActivity {
         @Override
         protected List<Track> doInBackground(String... params) {
             List<Track> tracks = new ArrayList<Track>();
-            SpotifyApi api = new SpotifyApi();
-            SpotifyService service = api.getService();
-            Tracks tracks1 = service.getArtistTopTrack(params[0]);
-            if(tracks1.tracks.size()>0)
-                tracks = service.getArtistTopTrack(params[0]).tracks;
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(SpotifyApi.SPOTIFY_WEB_API_ENDPOINT)
+                    .setRequestInterceptor(new RequestInterceptor() {
+                        @Override
+                        public void intercept(RequestInterceptor.RequestFacade request) {
+                            request.addQueryParam("country", "IT");
+                        }
+                    })
+                    .build();
+            SpotifyService service = restAdapter.create(SpotifyService.class);
+            try {
+                Tracks tracks1 = service.getArtistTopTrack(params[0]);
+                if(tracks1.tracks.size()>0)
+                    tracks = service.getArtistTopTrack(params[0]).tracks;
+            }catch(RetrofitError e){
+
+            }
             return tracks;
         }
 
