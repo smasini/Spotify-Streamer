@@ -3,9 +3,10 @@
     android:layout_height="match_parent"
     tools:context="app.nanodegree.masini.simone.spotify_streamer.TopTenActivity">
 
-
-    <FrameLayout
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/container"></FrameLayout>
+        android:id="@+id/listview_top_10"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
