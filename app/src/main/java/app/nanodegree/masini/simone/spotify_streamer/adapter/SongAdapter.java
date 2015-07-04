@@ -36,10 +36,7 @@ public class SongAdapter extends ArrayAdapter<Track> {
         if(convertView==null){
             LayoutInflater inflater = context.getLayoutInflater();
             convertView = inflater.inflate(R.layout.top_ten_row, parent, false);
-            TextView song = (TextView) convertView.findViewById(R.id.textview_song_title);
-            TextView album = (TextView) convertView.findViewById(R.id.textview_song_album);
-            ImageView photo = (ImageView) convertView.findViewById(R.id.imageview_thumbnail_song);
-            holder = new ViewHolder(song,album, photo);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         }
 
@@ -51,13 +48,11 @@ public class SongAdapter extends ArrayAdapter<Track> {
         }
 
         Track track = getItem(position);
-
         if(track!=null && holder !=null){
             holder.textHolderSongTitle.setText(track.name);
             holder.textHolderAlbum.setText(track.album.name);
             if(track.album.images.size()>0)
                 Picasso.with(context).load(track.album.images.get(0).url).into(holder.holderImage);
-
         }
         return convertView;
     }
@@ -66,10 +61,10 @@ public class SongAdapter extends ArrayAdapter<Track> {
         public final TextView textHolderSongTitle, textHolderAlbum;
         public final ImageView holderImage;
 
-        public ViewHolder(TextView text,TextView text2, ImageView image){
-            this.textHolderSongTitle = text;
-            this.textHolderAlbum = text2;
-            this.holderImage = image;
+        public ViewHolder(View view){
+            this.textHolderSongTitle = (TextView) view.findViewById(R.id.textview_song_title);
+            this.textHolderAlbum = (TextView) view.findViewById(R.id.textview_song_album);
+            this.holderImage = (ImageView) view.findViewById(R.id.imageview_thumbnail_song);
         }
     }
 }

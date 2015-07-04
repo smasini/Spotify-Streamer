@@ -27,7 +27,6 @@ public class TopTenActivity extends ActionBarActivity {
                     .add(R.id.container, fragment)
                     .commit();
 
-
     }
 
 

@@ -36,9 +36,7 @@ public class ArtistAdapter extends ArrayAdapter<Artist> {
         if(convertView==null){
             LayoutInflater inflater = context.getLayoutInflater();
             convertView = inflater.inflate(R.layout.artrist_row, parent, false);
-            TextView artistName = (TextView) convertView.findViewById(R.id.textview_artist_name);
-            ImageView photo = (ImageView) convertView.findViewById(R.id.imageview_artist_thumbnail);
-            holder = new ViewHolder(artistName, photo);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         }
 
@@ -50,12 +48,10 @@ public class ArtistAdapter extends ArrayAdapter<Artist> {
         }
 
         Artist artist = getItem(position);
-
         if(artist!=null && holder !=null){
             holder.textHolderName.setText(artist.name);
             if(artist.images.size()>0)
                 Picasso.with(context).load(artist.images.get(0).url).into(holder.holderImage);
-
         }
         return convertView;
     }
@@ -64,9 +60,9 @@ public class ArtistAdapter extends ArrayAdapter<Artist> {
         public final TextView textHolderName;
         public final ImageView holderImage;
 
-        public ViewHolder(TextView text, ImageView image){
-            this.textHolderName = text;
-            this.holderImage = image;
+        public ViewHolder(View view){
+            this.textHolderName = (TextView) view.findViewById(R.id.textview_artist_name);
+            this.holderImage = (ImageView) view.findViewById(R.id.imageview_artist_thumbnail);
         }
     }
 }
