@@ -50,8 +50,8 @@ public class ArtistAdapter extends ArrayAdapter<Artist> {
         Artist artist = getItem(position);
         if(artist!=null && holder !=null){
             holder.textHolderName.setText(artist.name);
-            if(artist.images.size()>0)
-                Picasso.with(context).load(artist.images.get(0).url).into(holder.holderImage);
+            if(artist.images.size()>0 && !artist.images.get(artist.images.size()-1).url.equals(""))
+                Picasso.with(context).load(artist.images.get(artist.images.size()-1).url).into(holder.holderImage);
         }
         return convertView;
     }

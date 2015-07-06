@@ -38,9 +38,7 @@ public class SearchArtistFragment extends Fragment {
     private String mArtist;
     private final String ARTIST_KEY = "artist_key";
 
-    public SearchArtistFragment() {
-        // Required empty public constructor
-    }
+    public SearchArtistFragment() { }
 
 
     @Override
@@ -49,14 +47,21 @@ public class SearchArtistFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_search_artist, container, false);
 
-        EditText searchArtist = (EditText) view.findViewById(R.id.edit_text_artist_name);
+        final EditText searchArtist = (EditText) view.findViewById(R.id.edit_text_artist_name);
         ListView resultArtist = (ListView) view.findViewById(R.id.listview_artist_result);
+
+        if(savedInstanceState!=null){
+            mArtist = savedInstanceState.getString(ARTIST_KEY);
+        }
+
         searchArtist.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -64,13 +69,14 @@ public class SearchArtistFragment extends Fragment {
                 searchArtist();
             }
         });
+
         mArtistAdapter = new ArtistAdapter(getActivity());
         resultArtist.setAdapter(mArtistAdapter);
         resultArtist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Artist artist = mArtistAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(),TopTenActivity.class);
+                Intent intent = new Intent(getActivity(), TopTenActivity.class);
                 intent.putExtra(getString(R.string.extra_artist_id_key), artist.id);
                 intent.putExtra(getString(R.string.extra_artist_name_key), artist.name);
                 startActivity(intent);
@@ -80,10 +86,9 @@ public class SearchArtistFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        if(mArtist!=null)
-            searchArtist();
-        super.onResume();
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putString(ARTIST_KEY, mArtist);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     public void searchArtist(){
@@ -93,8 +98,6 @@ public class SearchArtistFragment extends Fragment {
         mSearchTask = new SearchTask();
         mSearchTask.execute(mArtist);
     }
-
-
 
     public class SearchTask extends AsyncTask<String,Void, List<Artist>> {
 
