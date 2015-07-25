@@ -2,6 +2,8 @@ package app.nanodegree.masini.simone.spotify_streamer.fragment;
 
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,13 +13,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import app.nanodegree.masini.simone.spotify_streamer.PlaybackActivity;
 import app.nanodegree.masini.simone.spotify_streamer.R;
 import app.nanodegree.masini.simone.spotify_streamer.adapter.SongAdapter;
+import app.nanodegree.masini.simone.spotify_streamer.model.SpotifyTrack;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
@@ -34,11 +39,11 @@ public class TopTenFragment extends Fragment {
     private String idArtist, nameArtist;
     private SongAdapter adapter;
     private SearchSongTask searchSongTask;
-
+    private ArrayList<SpotifyTrack> tracks = new ArrayList<>();
     public TopTenFragment() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_top_ten, container, false);
@@ -52,6 +57,25 @@ public class TopTenFragment extends Fragment {
         adapter = new SongAdapter(getActivity());
         ListView listView = (ListView) view.findViewById(R.id.listview_top_10);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                FragmentManager fm = getActivity().getFragmentManager();
+                PlaybackFragment playbackFragment = new PlaybackFragment();
+                Bundle arguments = new Bundle();
+                arguments.putParcelableArrayList(getString(R.string.extra_tracks_array_key), tracks);
+                arguments.putInt(getString(R.string.extra_current_position_key), i);
+                playbackFragment.setArguments(arguments);
+                if (getResources().getConfiguration().smallestScreenWidthDp >= 600) {
+                    playbackFragment.show(fm, getString(R.string.fragment_dialog_key));
+                } else {
+                    Intent intent = new Intent(getActivity(), PlaybackActivity.class);
+                    intent.putParcelableArrayListExtra(getString(R.string.extra_tracks_array_key), tracks);
+                    intent.putExtra(getString(R.string.extra_current_position_key), i);
+                    startActivity(intent);
+                }
+            }
+        });
 
         searchSongTask = new SearchSongTask();
         searchSongTask.execute(idArtist);
@@ -60,6 +84,18 @@ public class TopTenFragment extends Fragment {
             ab.setSubtitle(nameArtist);
 
         return view;
+    }
+
+    public SpotifyTrack getTrack(Track track){
+        SpotifyTrack spotifyTrack = new SpotifyTrack();
+        spotifyTrack.setAlbumName(track.album.name);
+        spotifyTrack.setArtistName(nameArtist);
+        spotifyTrack.setId(track.id);
+        spotifyTrack.setName(track.name);
+        spotifyTrack.setPreviewUrl(track.preview_url);
+        if(track.album.images.size()>0 && !track.album.images.get(0).equals(""))
+            spotifyTrack.setUrlImage(track.album.images.get(0).url);
+        return spotifyTrack;
     }
 
     public class SearchSongTask extends AsyncTask<String,Void,List<Track>> {
@@ -90,10 +126,13 @@ public class TopTenFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(List<Track> tracks) {
-            super.onPostExecute(tracks);
+        protected void onPostExecute(List<Track> track) {
+            super.onPostExecute(track);
+            for(int i = 0;i<track.size();i++) {
+                tracks.add(getTrack(track.get(i)));
+            }
             adapter.clear();
-            adapter.addAll(tracks);
+            adapter.addAll(track);
         }
     }
 }

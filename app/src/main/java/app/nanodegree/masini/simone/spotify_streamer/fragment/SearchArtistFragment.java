@@ -2,7 +2,7 @@ package app.nanodegree.masini.simone.spotify_streamer.fragment;
 
 
 import android.app.Fragment;
-import android.content.Intent;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.nanodegree.masini.simone.spotify_streamer.R;
-import app.nanodegree.masini.simone.spotify_streamer.TopTenActivity;
 import app.nanodegree.masini.simone.spotify_streamer.adapter.ArtistAdapter;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -48,6 +48,15 @@ public class SearchArtistFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_search_artist, container, false);
 
         final EditText searchArtist = (EditText) view.findViewById(R.id.edit_text_artist_name);
+        searchArtist.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(!b){
+                    InputMethodManager imm =  (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
+            }
+        });
         ListView resultArtist = (ListView) view.findViewById(R.id.listview_artist_result);
 
         if(savedInstanceState!=null){
@@ -76,10 +85,7 @@ public class SearchArtistFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Artist artist = mArtistAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), TopTenActivity.class);
-                intent.putExtra(getString(R.string.extra_artist_id_key), artist.id);
-                intent.putExtra(getString(R.string.extra_artist_name_key), artist.name);
-                startActivity(intent);
+                ((Callback) getActivity()).onItemSelected(artist.id,artist.name);
             }
         });
         return view;
@@ -126,6 +132,11 @@ public class SearchArtistFragment extends Fragment {
             mArtistAdapter.clear();
             mArtistAdapter.addAll(artists);
         }
+    }
+
+
+    public interface Callback {
+        void onItemSelected(String idArtist, String nameArtist);
     }
 
 }

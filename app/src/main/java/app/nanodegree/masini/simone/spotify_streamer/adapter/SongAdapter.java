@@ -51,8 +51,8 @@ public class SongAdapter extends ArrayAdapter<Track> {
         if(track!=null && holder !=null){
             holder.textHolderSongTitle.setText(track.name);
             holder.textHolderAlbum.setText(track.album.name);
-            if(track.album.images.size()>0)
-                Picasso.with(context).load(track.album.images.get(0).url).into(holder.holderImage);
+            if(track.album.images.size()>0 && !track.album.images.get(track.album.images.size()-1).url.equals(""))
+                Picasso.with(context).load(track.album.images.get(track.album.images.size()-1).url).into(holder.holderImage);
         }
         return convertView;
     }
