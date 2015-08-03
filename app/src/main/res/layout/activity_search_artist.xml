@@ -9,7 +9,7 @@
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="app.nanodegree.masini.simone.spotify_streamer.fragment.SearchArtistFragment"
+        android:name="app.nanodegree.masini.simone.spotify_streamer.fragments.SearchArtistFragment"
         android:id="@+id/fragmentSearch"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />

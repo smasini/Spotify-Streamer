@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="app.nanodegree.masini.simone.spotify_streamer.fragment.PlaybackFragment"
+    tools:context="app.nanodegree.masini.simone.spotify_streamer.fragments.PlaybackFragment"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center_horizontal"

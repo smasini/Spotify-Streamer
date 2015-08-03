@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-import app.nanodegree.masini.simone.spotify_streamer.fragment.TopTenFragment;
+import app.nanodegree.masini.simone.spotify_streamer.fragments.TopTenFragment;
 
 
 public class TopTenActivity extends ActionBarActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +27,4 @@ public class TopTenActivity extends ActionBarActivity {
                     .commit();
 
     }
-
-
-
-
 }

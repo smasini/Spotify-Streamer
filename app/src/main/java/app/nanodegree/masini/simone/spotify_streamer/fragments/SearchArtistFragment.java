@@ -1,4 +1,4 @@
-package app.nanodegree.masini.simone.spotify_streamer.fragment;
+package app.nanodegree.masini.simone.spotify_streamer.fragments;
 
 
 import android.app.Fragment;
@@ -20,17 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.nanodegree.masini.simone.spotify_streamer.R;
-import app.nanodegree.masini.simone.spotify_streamer.adapter.ArtistAdapter;
+import app.nanodegree.masini.simone.spotify_streamer.adapters.ArtistAdapter;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import retrofit.RetrofitError;
 
-
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SearchArtistFragment extends Fragment {
 
     private ArtistAdapter mArtistAdapter;
@@ -134,9 +130,7 @@ public class SearchArtistFragment extends Fragment {
         }
     }
 
-
     public interface Callback {
         void onItemSelected(String idArtist, String nameArtist);
     }
-
 }

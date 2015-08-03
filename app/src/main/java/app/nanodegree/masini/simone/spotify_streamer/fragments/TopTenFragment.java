@@ -1,4 +1,4 @@
-package app.nanodegree.masini.simone.spotify_streamer.fragment;
+package app.nanodegree.masini.simone.spotify_streamer.fragments;
 
 
 import android.app.Fragment;
@@ -11,6 +11,9 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,10 +22,11 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.nanodegree.masini.simone.spotify_streamer.MediaConnection;
 import app.nanodegree.masini.simone.spotify_streamer.PlaybackActivity;
 import app.nanodegree.masini.simone.spotify_streamer.R;
-import app.nanodegree.masini.simone.spotify_streamer.adapter.SongAdapter;
-import app.nanodegree.masini.simone.spotify_streamer.model.SpotifyTrack;
+import app.nanodegree.masini.simone.spotify_streamer.adapters.SongAdapter;
+import app.nanodegree.masini.simone.spotify_streamer.models.SpotifyTrack;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
@@ -31,16 +35,15 @@ import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class TopTenFragment extends Fragment {
 
     private String idArtist, nameArtist;
     private SongAdapter adapter;
-    private SearchSongTask searchSongTask;
     private ArrayList<SpotifyTrack> tracks = new ArrayList<>();
-    public TopTenFragment() { }
+
+    private MenuItem menuItem;
+
+    public TopTenFragment() { setHasOptionsMenu(true); }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -60,13 +63,13 @@ public class TopTenFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                FragmentManager fm = getActivity().getFragmentManager();
-                PlaybackFragment playbackFragment = new PlaybackFragment();
-                Bundle arguments = new Bundle();
-                arguments.putParcelableArrayList(getString(R.string.extra_tracks_array_key), tracks);
-                arguments.putInt(getString(R.string.extra_current_position_key), i);
-                playbackFragment.setArguments(arguments);
                 if (getResources().getConfiguration().smallestScreenWidthDp >= 600) {
+                    FragmentManager fm = getActivity().getFragmentManager();
+                    PlaybackFragment playbackFragment = new PlaybackFragment();
+                    Bundle arguments = new Bundle();
+                    arguments.putParcelableArrayList(getString(R.string.extra_tracks_array_key), tracks);
+                    arguments.putInt(getString(R.string.extra_current_position_key), i);
+                    playbackFragment.setArguments(arguments);
                     playbackFragment.show(fm, getString(R.string.fragment_dialog_key));
                 } else {
                     Intent intent = new Intent(getActivity(), PlaybackActivity.class);
@@ -77,7 +80,7 @@ public class TopTenFragment extends Fragment {
             }
         });
 
-        searchSongTask = new SearchSongTask();
+        SearchSongTask searchSongTask = new SearchSongTask();
         searchSongTask.execute(idArtist);
         android.support.v7.app.ActionBar ab = ((ActionBarActivity) this.getActivity()).getSupportActionBar();
         if(ab!=null)
@@ -93,6 +96,13 @@ public class TopTenFragment extends Fragment {
         spotifyTrack.setId(track.id);
         spotifyTrack.setName(track.name);
         spotifyTrack.setPreviewUrl(track.preview_url);
+        for(String key: track.external_urls.keySet()){
+            String value = track.external_urls.get(key);
+            if(!value.equals("")){
+                spotifyTrack.setExternalUrl(value);
+                break;
+            }
+        }
         if(track.album.images.size()>0 && !track.album.images.get(0).equals(""))
             spotifyTrack.setUrlImage(track.album.images.get(0).url);
         return spotifyTrack;
@@ -134,5 +144,43 @@ public class TopTenFragment extends Fragment {
             adapter.clear();
             adapter.addAll(track);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_playback, menu);
+        menuItem = menu.findItem(R.id.action_resume_playback);
+        menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if (getResources().getConfiguration().smallestScreenWidthDp >= 600) {
+                    FragmentManager fm = getActivity().getFragmentManager();
+                    PlaybackFragment playbackFragment = new PlaybackFragment();
+                    Bundle arguments = new Bundle();
+                    arguments.putBoolean(getString(R.string.extra_play_now_key), true);
+                    playbackFragment.setArguments(arguments);
+                    playbackFragment.show(fm, getString(R.string.fragment_dialog_key));
+                } else {
+                    Intent intent = new Intent(getActivity(), PlaybackActivity.class);
+                    intent.putExtra(getString(R.string.extra_play_now_key), true);
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
+        if(!MediaConnection.getMediaConnectionInstance().isSomethingPlayingNow()){
+            menuItem.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        if(menuItem!=null) {
+            if (MediaConnection.getMediaConnectionInstance().isSomethingPlayingNow())
+                menuItem.setEnabled(true);
+            else
+                menuItem.setEnabled(false);
+        }
+        super.onStart();
     }
 }

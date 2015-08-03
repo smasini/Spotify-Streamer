@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_resume_playback"
+        android:title="@string/action_bar_btn_now_playing"
+        app:showAsAction="always"/>
+    <item android:id="@+id/action_share"
+        android:title="@string/action_share"
+        app:showAsAction="always"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider" />
+</menu>

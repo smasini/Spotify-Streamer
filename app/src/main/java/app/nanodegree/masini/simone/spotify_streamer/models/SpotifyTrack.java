@@ -1,10 +1,12 @@
-package app.nanodegree.masini.simone.spotify_streamer.model;
+package app.nanodegree.masini.simone.spotify_streamer.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by User on 20/07/2015.
+ * Project: Spotify-Streamer
+ * Package: ${PACKAGE_NAME}
+ * Created by Simone Masini on 20/07/2015 at 23.41.
  */
 public class SpotifyTrack implements Parcelable {
 
@@ -14,11 +16,12 @@ public class SpotifyTrack implements Parcelable {
     private String albumName;
     private String urlImage;
     private String previewUrl;
+    private String externalUrl;
 
     public SpotifyTrack(){}
 
     public SpotifyTrack(Parcel in){
-        String[] data = new String[6];
+        String[] data = new String[7];
         in.readStringArray(data);
 
         this.id = data[0];
@@ -27,6 +30,7 @@ public class SpotifyTrack implements Parcelable {
         this.albumName = data[3];
         this.urlImage = data[4];
         this.previewUrl = data[5];
+        this.externalUrl = data[6];
     }
 
     @Override
@@ -42,7 +46,8 @@ public class SpotifyTrack implements Parcelable {
                 this.artistName,
                 this.albumName,
                 this.urlImage,
-                this.previewUrl
+                this.previewUrl,
+                this.externalUrl
         });
     }
 
@@ -102,5 +107,13 @@ public class SpotifyTrack implements Parcelable {
 
     public void setPreviewUrl(String previewUrl) {
         this.previewUrl = previewUrl;
+    }
+
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
     }
 }

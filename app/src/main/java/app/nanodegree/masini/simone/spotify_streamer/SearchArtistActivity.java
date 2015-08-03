@@ -6,9 +6,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import app.nanodegree.masini.simone.spotify_streamer.fragment.SearchArtistFragment;
-import app.nanodegree.masini.simone.spotify_streamer.fragment.TopTenFragment;
-
+import app.nanodegree.masini.simone.spotify_streamer.fragments.SearchArtistFragment;
+import app.nanodegree.masini.simone.spotify_streamer.fragments.TopTenFragment;
+import app.nanodegree.masini.simone.spotify_streamer.services.PlaybackService;
 
 public class SearchArtistActivity extends ActionBarActivity implements SearchArtistFragment.Callback {
 
@@ -20,19 +20,24 @@ public class SearchArtistActivity extends ActionBarActivity implements SearchArt
         setContentView(R.layout.activity_search_artist);
         if (findViewById(R.id.container_top_ten_track) != null) {
             mTwoPane = true;
-           /* if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.weather_detail_container, new DetailFragment(), DETAILFRAGMENT_TAG)
-                        .commit();
-            }*/
         } else {
             mTwoPane = false;
         }
     }
 
     @Override
+    protected void onDestroy() {
+        if(PlaybackService.isRunning()) {
+            MediaConnection.getMediaConnectionInstance().resetMP();
+            Intent intent = new Intent(this, PlaybackService.class);
+            stopService(intent);
+        }
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search_artist, menu);
+        getMenuInflater().inflate(R.menu.menu_general, menu);
         return true;
     }
 

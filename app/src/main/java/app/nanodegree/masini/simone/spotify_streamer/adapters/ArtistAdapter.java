@@ -1,4 +1,4 @@
-package app.nanodegree.masini.simone.spotify_streamer.adapter;
+package app.nanodegree.masini.simone.spotify_streamer.adapters;
 
 import android.content.Context;
 import android.support.v7.app.ActionBarActivity;

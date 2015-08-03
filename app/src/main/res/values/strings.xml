@@ -18,6 +18,16 @@
     <string name="first_song_message">This is the first song</string>
     <string name="fragment_dialog_key">fragment_dialog</string>
     <string name="label_progress_dialog">Loading...</string>
+    <string name="action_share">Share</string>
+    <string name="extra_preview_url_key">preview_url_track</string>
+    <string name="extra_duration_key">extra_duration_total_key</string>
+    <string name="extra_position_key">extra_current_position_key</string>
+    <string name="pref_enable_notifications_key">media_notification</string>
+    <string name="pref_enable_notifications_label">Media Playback Notification</string>
+    <string name="pref_enable_notifications_true">Enabled (only for Lollipop and above)</string>
+    <string name="pref_enable_notifications_false">Not Enabled</string>
+    <string name="extra_play_now_key">play_now_key</string>
+    <string name="action_bar_btn_now_playing">Now Playing</string>
 
 
 </resources>
