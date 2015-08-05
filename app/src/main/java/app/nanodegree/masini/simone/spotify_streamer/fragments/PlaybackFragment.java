@@ -93,6 +93,10 @@ public class PlaybackFragment extends DialogFragment{
                 getActivity().startService(mediaPlayerService);
             }
             mediaConnection.init();
+            Intent mediaPlayerService = new Intent(getActivity(), PlaybackService.class);
+            mediaPlayerService.setAction(PlaybackService.ACTION_PLAY);
+            mediaPlayerService.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            getActivity().startService(mediaPlayerService);
         }
         currentTrack = tracks.get(position);
         return view;
